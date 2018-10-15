@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <style type="text/css">
-    table, th, tr{
+    table, tr {
         border: 1px black solid;
     }
 </style>
@@ -24,21 +24,21 @@
     </tr>
 
     {% for t in result.tests %}
-    <tr>
-    <td>{{ t.input }}</td>
-        {%- if t.expect is string %}
-            <td>"{{ t.expect }}"</td>
-        {%- else %}
-            <td>{{ t.expect }}</td>
-        {% endif %}
-        {%- if t.result is string %}
-            <td>"{{ t.result }}"</td>
-        {%- else %}
-            <td>{{ t.result }}</td>
-        {% endif %}
-    <td>{{ t.verdict }}</td>
-    <td>{{ t.spent_time }}</td>
-    </tr>
+        <tr>
+            <td>{{ t.input }}</td>
+            {%- if t.expect is string %}
+                <td>"{{ t.expect }}"</td>
+            {%- else %}
+                <td>{{ t.expect }}</td>
+            {% endif %}
+            {%- if t.result is string %}
+                <td>"{{ t.result }}"</td>
+            {%- else %}
+                <td>{{ t.result }}</td>
+            {% endif %}
+            <td>{{ t.verdict }}</td>
+            <td>{{ t.spent_time }}</td>
+        </tr>
     {% endfor %}
 </table>
 
