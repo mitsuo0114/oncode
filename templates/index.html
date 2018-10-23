@@ -3,13 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script language="javascript" type="text/javascript">
+        intervals = [];
+        function formatParams(params) {
+            return "?" + Object
+                .keys(params)
+                .map(function (key) {
+                    return key + "=" + encodeURIComponent(params[key])
+                })
+                .join("&")
+        }
+
+        function setPids(data) {
+            target = document.getElementById("result");
+            for (var pid in data['pids']) {
+                console.log(data['pids'][pid]);
+                var result = document.createElement("div");
+                result.setAttribute("id", data['pids'][pid]);
+                result.appendChild(document.createTextNode("Waiting.." + data['pids'][pid]));
+                target.appendChild(result);
+
+                var load = function (pid) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        switch (xhr.readyState) {
+                            case 4:
+                                if (xhr.status === 200 || xhr.status === 304) {
+                                    var data = xhr.responseText; // responseXML もあり
+                                    console.log('COMPLETE! :' + data);
+                                    k = JSON.parse(data);
+                                    console.log(k);
+                                    if (k["result"] != null) {
+                                        clearInterval(intervals[k["pid"]])
+                                        target = document.getElementById(k["pid"])
+                                        target.innerHTML = JSON.stringify(k) + k.toSource()
+                                    }
+
+                                }
+                        }
+                    };
+                    var data = {'pid': pid};
+                    xhr.open('GET', '/fetch' + formatParams(data), false);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(null);
+                    xhr.abort();
+                };
+
+                intervals[data['pids'][pid]] = setInterval(load.bind(undefined, data['pids'][pid]), 1000)
+            }
+        }
+
+        function EncodeHTMLForm(data) {
+            var params = [];
+            for (var name in data) {
+                var value = data[name];
+                var param = encodeURIComponent(name).replace(/%20/g, '+')
+                    + '=' + encodeURIComponent(value).replace(/%20/g, '+');
+                params.push(param);
+            }
+            return params.join('&');
+        }
+
+        function OnButtonClick() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                switch (xhr.readyState) {
+                    case 0:
+                        console.log('uninitialized!');
+                        break;
+                    case 1:
+                        console.log('loading...');
+                        break;
+                    case 2:
+                        console.log('loaded.');
+                        break;
+                    case 3:
+                        console.log('interactive... ' + xhr.responseText.length + ' bytes.');
+                        break;
+                    case 4:
+                        if (xhr.status === 200 || xhr.status === 304) {
+                            var data = xhr.responseText; // responseXML もあり
+                            console.log('COMPLETE! :' + data);
+                            setPids(JSON.parse(data))
+                        } else {
+                            console.log('Failed. HttpStatus: ' + xhr.statusText);
+                        }
+                        break;
+                }
+            };
+            target = document.getElementById("code");
+            var data = {code: target.value, "json": true};
+            xhr.open('POST', '/execute', false);
+            // POST 送信の場合は Content-Type は固定.
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(EncodeHTMLForm(data));
+            xhr.abort();
+        }
+    </script>
 </head>
 <body>
-<form method="post" action="/execute">
-    <textarea name="code" title="code" style="width:30%; height:50em">def add(param1, param2):
+<form method="post" action="/execute" style="float: left; width:70%">
+    <textarea id="code" name="code" title="code" style="width:30%; height:50em">def add(param1, param2):
      return int(param1) + int(param2)</textarea>
     <input type="submit" title="submit"/>
+    <input type="button" title="execute" onclick="OnButtonClick();"/>
 </form>
+<div style="float: right;" id="result">
+    <h1>test</h1>
+
+</div>
 
 </body>
 </html>
