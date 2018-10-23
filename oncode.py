@@ -1,27 +1,35 @@
+import json
 import os
 import pickle
 import time
-import json
 import uuid
 
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 from concurrent.futures import ThreadPoolExecutor
+
 executer = ThreadPoolExecutor(max_workers=10)
 results = {}
+
 
 @app.route('/')
 def hello_world():
     return render_template('index.html')
 
+
 @app.route("/fetch")
 def fetch():
     pid = request.args.get('pid')
+    file = f"tmp/{pid}_result.txt"
     result = {}
-    with open(f"tmp/{pid}_result.txt", "rb") as f:
-        result = pickle.load(f)
-    print(result)
+    if os.path.exists(file):
+        with open(file, "rb") as f:
+            try:
+                result = pickle.load(f)
+            except:
+                pass
+    result['pid'] = pid
     return json.dumps(result, indent=2)
 
 
@@ -41,6 +49,7 @@ def ex(pid, case, submit_code):
     with open(f"tmp/{pid}_result.txt", "wb") as f:
         f.write(pickle.dumps(result))
     print("outputted to " + f"{pid}_result.txt")
+
 
 @app.route('/execute', methods=['POST'])
 def execute():
@@ -63,10 +72,11 @@ with open("tmp/" + sys.argv[1] + "_result.txt", "wb") as f:
         f.write(code)
     result["pids"] = []
     for case in question["testcases"]:
-        pid = uuid.uuid4()
+        pid = str(uuid.uuid4())
         result["pids"].append(pid)
-        executer.submit(ex, str(pid), case, submit_code)
-
+        executer.submit(ex, pid, case, submit_code)
+    if request.form.get('json') == 'true':
+        return json.dumps(result, indent=2)
     return render_template('execute.html', result=result)
 
 
