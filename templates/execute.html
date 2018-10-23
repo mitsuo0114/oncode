@@ -16,6 +16,7 @@
 
 <table>
     <tr>
+        <th>pid</th>
         <th>input</th>
         <th>expect</th>
         <th>result</th>
@@ -23,21 +24,27 @@
         <th>time</th>
     </tr>
 
-    {% for t in result.tests %}
+    {% for pid in result.pids %}
         <tr>
-            <td>{{ t.input }}</td>
-            {%- if t.expect is string %}
-                <td>"{{ t.expect }}"</td>
-            {%- else %}
-                <td>{{ t.expect }}</td>
-            {% endif %}
-            {%- if t.result is string %}
-                <td>"{{ t.result }}"</td>
-            {%- else %}
-                <td>{{ t.result }}</td>
-            {% endif %}
-            <td>{{ t.verdict }}</td>
-            <td>{{ t.spent_time }}</td>
+            <td><a href="/fetch?pid={{pid}}">{{ pid }}</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+{#            <td>{{ t.input }}</td>#}
+{#            {%- if t.expect is string %}#}
+{#                <td>"{{ t.expect }}"</td>#}
+{#            {%- else %}#}
+{#                <td>{{ t.expect }}</td>#}
+{#            {% endif %}#}
+{#            {%- if t.result is string %}#}
+{#                <td>"{{ t.result }}"</td>#}
+{#            {%- else %}#}
+{#                <td>{{ t.result }}</td>#}
+{#            {% endif %}#}
+{#            <td>{{ t.verdict }}</td>#}
+{#            <td>{{ t.spent_time }}</td>#}
         </tr>
     {% endfor %}
 </table>
