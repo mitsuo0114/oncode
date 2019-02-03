@@ -1,0 +1,12 @@
+.en_content {
+    width: 300px;
+    margin-top: 10px;
+    background-color: lightblue;
+}
+
+
+.jp_content {
+    width: 300px;
+    margin-top: 10px;
+    background-color: lightyellow;
+}
