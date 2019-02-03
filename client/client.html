@@ -11,7 +11,7 @@
                 output("onopen");
             };
             ws.onmessage = function (e) {
-                // e.data contains received string.
+
                 output("onmessage: " + e.data);
             };
             ws.onclose = function () {
@@ -26,17 +26,12 @@
 
         function onSubmit() {
             var input = document.getElementById("input");
-            // You can send message to the Web Socket using ws.send.
             ws.send(input.value);
-            // output("send: " + input.value);
-            // input.value = "";
             input.focus();
         }
 
         function onKeyPress(event) {
             var c = event.which || event.keyCode;
-            //ws.send("inputing : " + String.fromCharCode(c));
-            //ws.send(data);
             console.log(c)
         }
 
