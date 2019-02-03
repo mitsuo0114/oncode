@@ -4,14 +4,11 @@
     <script type="text/javascript">
         var ws;
         function init() {
-            // Connect to Web Socket
             ws = new WebSocket("ws://localhost:9001/");
-            // Set event handlers.
             ws.onopen = function () {
                 output("onopen");
             };
             ws.onmessage = function (e) {
-
                 output("onmessage: " + e.data);
             };
             ws.onclose = function () {
@@ -21,7 +18,6 @@
                 output("onerror");
                 console.log(e)
             };
-
         }
 
         function onSubmit() {
