@@ -60,7 +60,7 @@ const Folders = (props) => {
         const files = program_data[key].map((name) => {
             return <p className="File" key={name.program_id} onClick={() => {
                 props.props.props.props.change_program(name.program_id);
-            }} > - {name.short_title} </p>
+            }}> - {name.short_title} </p>
         });
 
         return <div className="Folder" key={1}> + {key}
@@ -151,10 +151,30 @@ const Body = (props) => {
 };
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+
+        console.log("[App] constructor was called");
+        this.ws = new WebSocket("ws://localhost:9001/");
+        this.ws.onopen = function () {
+            console.log("onopen");
+        };
+        this.ws.onmessage = function (e) {
+            console.log("onmessage: " + e.data);
+        };
+        this.ws.onclose = function () {
+            console.log("onclose");
+        };
+        this.ws.onerror = function (e) {
+            console.log("onerror");
+            console.log(e)
+        };
+    }
+
     render() {
         return (
             <div className="App">
-                <input type="button" onClick={() => this.props.change_program()} />
+                <input type="button" onClick={() => this.props.change_program()}/>
                 <Header program_id={this.props.program_id}/>
                 <Body props={this.props}/>
             </div>
@@ -201,7 +221,7 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 };
 
-App = connect(mapStateToProps,mapDispatchToProps)(App);
+App = connect(mapStateToProps, mapDispatchToProps)(App);
 const store = createStore(reducer);
 export default App;
 export {store}
