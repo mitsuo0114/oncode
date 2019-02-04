@@ -7,7 +7,7 @@ import uuid
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from lib.websocketserver import WebsocketServer
+from libs.websocketserver import WebsocketServer
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()

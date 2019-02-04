@@ -7,7 +7,6 @@ import {Body} from './body'
 import {createStore} from 'redux'
 import {connect} from 'react-redux'
 
-
 class App extends Component {
 
 
@@ -40,15 +39,6 @@ class App extends Component {
     }
 }
 
-
-const CHANGE_PROGRAM = 'CHANGE_PROGRAM';
-
-const change_program = (program_id) => {
-    return {
-        type: CHANGE_PROGRAM,
-        program_id: program_id,
-    }
-};
 
 var initialState = {
     program_id: "level0-add",
@@ -92,6 +82,16 @@ var initialState = {
     }
 };
 
+
+
+const CHANGE_PROGRAM = 'CHANGE_PROGRAM';
+
+const change_program = (program_id) => {
+    return {
+        type: CHANGE_PROGRAM,
+        program_id: program_id,
+    }
+};
 const reducer = (state = initialState, action) => {
     console.log("reducer was called");
     console.log(state);
