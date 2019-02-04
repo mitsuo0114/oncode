@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>Simple client</title>
+    <script type="text/javascript">
+        var ws;
+        function init() {
+            ws = new WebSocket("ws://localhost:9001/");
+            ws.onopen = function () {
+                output("onopen");
+            };
+            ws.onmessage = function (e) {
+                output("onmessage: " + e.data);
+            };
+            ws.onclose = function () {
+                output("onclose");
+            };
+            ws.onerror = function (e) {
+                output("onerror");
+                console.log(e)
+            };
+        }
+
+        function onSubmit() {
+            var input = document.getElementById("input");
+            ws.send(input.value);
+            input.focus();
+        }
+
+        function onKeyPress(event) {
+            var c = event.which || event.keyCode;
+            console.log(c)
+        }
+
+        function onCloseClick(){
+            ws.close()
+        }
+
+        function output(str) {
+            var log = document.getElementById("log");
+            var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
+            log.innerHTML = escaped + "<br>" + log.innerHTML;
+        }
+
+    </script>
+</head>
+<body onload="init();">
+<form onsubmit="onSubmit(); return false;">
+    <textarea id="input" name="input" title="code" style="width:30%; height:50em">def add(param1, param2):
+     return int(param1) + int(param2)</textarea>
+    <input type="submit" value="Send">
+    <button onclick="onCloseClick(); return false;" >close</button>
+</form>
+<div id="log"></div>
+</body>
+</html>
