@@ -7,7 +7,7 @@ const Header = (props) => {
     return <header className="App-header">
         <img src={logo} className="App-logo" alt="logo"/>
         <p>OnCode</p>
-        <p>{program_id}</p>
+        <p> - {props.program_data[props.program_id].short_title}</p>
     </header>
 };
 

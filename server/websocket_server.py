@@ -16,42 +16,49 @@ logger.addHandler(handler)
 logger.propagate = False
 
 program_data = {
-    "Level": [
-        {
-            "program_id": "level0-add",
-            "short_title": "Add",
-            "question": "変数二つを足す関数を作成する。",
-            "initial_code": ["def add(a, b):\n    return a + b"],
-            "function_params": ["a", "b"],
-            "testcases": [
-                {
-                    "input": [1, 2],
-                    "expect": 3
-                },
-                {
-                    "input": [-1, 6],
-                    "expect": 5
-                }
-            ],
-        },
-        {
-            "program_id": "level0-sub",
-            "short_title": "Sub",
-            "question": "変数二つを引く関数を作成する。",
-            "initial_code": ["def sub(a, b):\n    return a - b"],
-            "function_params": ["a", "b"],
-            "testcases": [
-                {
-                    "input": [2, 1],
-                    "expect": 1
-                },
-                {
-                    "input": [-1, 6],
-                    "expect": -7
-                }
-            ],
-        },
-    ]
+    "level0-add": {
+        "program_id": "level0-add",
+        "short_title": "Add",
+        "question": "変数二つを足す関数を作成する。",
+        "initial_code": ["def add(a, b):\n    return a + b"],
+        "function_params": ["a", "b"],
+        "testcases": [
+            {
+                "input": [1, 2],
+                "expect": 3,
+                "output": "XXX"
+            },
+            {
+                "input": [-1, 6],
+                "expect": 5,
+                "output": "XXX"
+            },
+            {
+                "input": [4, 5],
+                "expect": 9,
+                "output": "XXX"
+            }
+        ],
+    },
+    "level0-sub": {
+        "program_id": "level0-sub",
+        "short_title": "Sub",
+        "question": "変数二つを引く関数を作成する。",
+        "initial_code": ["def sub(a, b):\n    return a - b"],
+        "function_params": ["a", "b"],
+        "testcases": [
+            {
+                "input": [2, 1],
+                "expect": 1,
+                "output": "XXX"
+            },
+            {
+                "input": [-1, 6],
+                "expect": -7,
+                "output": "XXX"
+            }
+        ],
+    }
 }
 
 
@@ -94,7 +101,7 @@ class OnCodeServer:
         original_code = code
 
         result["pids"] = []
-        for case in question["testcases"]:
+        for i, case in enumerate(question["testcases"]):
             pid = str(uuid.uuid4())
             q = question["call"]
             q = q.replace("##TESTCASE##", case[0])
@@ -112,7 +119,7 @@ class OnCodeServer:
                 f.write(code)
             result["pids"].append(pid)
 
-            def ex(pid, case, submit_code, script, server):
+            def ex(i, pid, case, submit_code, script, server):
                 logger.debug("running with " + f"{pid} / {case}")
                 start = time.time()
                 logger.debug(f"executing [tmp/{script} {pid} {case[0]}]")
@@ -121,6 +128,7 @@ class OnCodeServer:
                 message = {}
                 with open(f"tmp/{pid}_result.txt", "rb") as f:
                     message["result"] = pickle.load(f)
+                message["index"] = i
                 message["input"] = case[0]
                 message["expect"] = case[1]
                 message["verdict"] = (message["result"] == case[1])
@@ -132,7 +140,7 @@ class OnCodeServer:
                 message["command"] = "show_testresult"
                 server.send_message_to_all(json.dumps(message))
 
-            self.executer.submit(ex, pid, case, original_code, script, server)
+            self.executer.submit(ex, i, pid, case, original_code, script, server)
 
     def message_received(self, client, server, message):
         if len(message) > 200:

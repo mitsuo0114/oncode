@@ -3,7 +3,7 @@ import CodeEditor from './codeeditor'
 import Folders from './folders'
 import Question from './question'
 import TestCases from './testcases'
-
+import Controller from './controller'
 
 const LeftBody = () => {
     return <div className="LeftBody">
@@ -14,6 +14,7 @@ const LeftBody = () => {
 const CenterBody = () => {
     return <div className="CenterBody">
         <Question/>
+        <Controller />
         <CodeEditor/>
     </div>
 };

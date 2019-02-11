@@ -3,17 +3,10 @@ import {connect} from "react-redux";
 import {change_program} from "./App";
 
 const Folders = (props) => {
-    let program_data = props.program_data;
-    const folders = Object.keys(program_data).map((key) => {
-        const files = program_data[key].map((name) => {
-            return <p className="File" key={name.program_id} onClick={() => {
-                props.change_program(name.program_id);
-            }}> - {name.short_title} </p>
-        });
-
-        return <div className="Folder" key={1}> + {key}
-            {files}
-        </div>
+    const folders = Object.keys(props.program_data).map((data) => {
+        return <p className="File" key={props.program_data[data].program_id} onClick={() => {
+            props.change_program(props.program_data[data].program_id);
+        }}> - {props.program_data[data].short_title} </p>
     });
 
     return <div className="Folders">

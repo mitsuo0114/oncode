@@ -6,15 +6,7 @@ import {connect} from "react-redux";
 class CodeEditor extends React.Component {
     constructor(props) {
         super(props);
-        let selected_program = props.program_id;
-        let program_data = props.program_data;
-        let all_programs = [];
-        Object.keys(program_data).map((key) => {
-            program_data[key].map((name) => {
-                all_programs[name.program_id] = name
-            });
-        });
-        let selected = all_programs[selected_program];
+        const selected = props.program_data[props.program_id];
 
         // this.state = {editorState: EditorState.createEmpty()};
         var c = ContentState.createFromText(selected.initial_code.join());
