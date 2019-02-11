@@ -15,6 +15,45 @@ handler.setFormatter(logging.Formatter("%(asctime)s %(name)-12s %(funcName)-7s %
 logger.addHandler(handler)
 logger.propagate = False
 
+program_data = {
+    "Level": [
+        {
+            "program_id": "level0-add",
+            "short_title": "Add",
+            "question": "変数二つを足す関数を作成する。",
+            "initial_code": ["def add(a, b):\n    return a + b"],
+            "function_params": ["a", "b"],
+            "testcases": [
+                {
+                    "input": [1, 2],
+                    "expect": 3
+                },
+                {
+                    "input": [-1, 6],
+                    "expect": 5
+                }
+            ],
+        },
+        {
+            "program_id": "level0-sub",
+            "short_title": "Sub",
+            "question": "変数二つを引く関数を作成する。",
+            "initial_code": ["def sub(a, b):\n    return a - b"],
+            "function_params": ["a", "b"],
+            "testcases": [
+                {
+                    "input": [2, 1],
+                    "expect": 1
+                },
+                {
+                    "input": [-1, 6],
+                    "expect": -7
+                }
+            ],
+        },
+    ]
+}
+
 
 class OnCodeServer:
 
@@ -32,9 +71,7 @@ class OnCodeServer:
     def new_client(self, client, server):
         logger.debug("New client connected and was given id %d" % client['id'])
         message = {"command": "init",
-                   "content": {
-                       "initialcode": ["hogehoge"]
-                   }
+                   "content": program_data
                    }
         # server.send_message_to_all("Hey all, a new client has joined us")
         server.send_message(client, json.dumps(message))
@@ -52,6 +89,7 @@ class OnCodeServer:
             "testcases":
                 [("1,2", 3), ("3,4", 7), ("4,5", 9)]
         }
+
         result = {}
         original_code = code
 

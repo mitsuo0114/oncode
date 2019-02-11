@@ -1,30 +1,33 @@
 import React, {Component} from 'react';
-import {Folders, Question, CodeEditor, TestCases} from './components'
+import CodeEditor from './codeeditor'
+import Folders from './folders'
+import Question from './question'
+import TestCases from './testcases'
 
 
-const LeftBody = (props) => {
+const LeftBody = () => {
     return <div className="LeftBody">
-        <Folders props={props}/>
+        <Folders/>
     </div>
 };
 
-const CenterBody = (props) => {
+const CenterBody = () => {
     return <div className="CenterBody">
-        <Question props={props}/>
-        <CodeEditor props={props}/>
+        <Question/>
+        <CodeEditor/>
     </div>
 };
-const RightBody = (props) => {
+const RightBody = () => {
     return <div className="CenterRight">
-        <TestCases props={props}/>
+        <TestCases/>
     </div>
 };
 
-const Body = (props) => {
+const Body = () => {
     return <div className="Blocks">
-        <LeftBody props={props}/>
-        <CenterBody props={props}/>
-        <RightBody props={props}/>
+        <LeftBody/>
+        <CenterBody/>
+        <RightBody/>
     </div>
 };
 export {Body}
