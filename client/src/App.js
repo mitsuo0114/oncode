@@ -21,7 +21,7 @@ class App extends Component {
             if (jd["command"] == "init") {
                 props.update_program(jd["content"])
             } else if (jd["command"] == "show_testresult") {
-                console.log("show_testresult")
+                console.log("show_testresult");
                 console.log(jd);
                 props.show_testresult(jd)
             }
@@ -51,6 +51,9 @@ const CHANGE_PROGRAM = 'CHANGE_PROGRAM';
 const UPDATE_PROGRAM = 'UPDATE_PROGRAM';
 const SUBMIT_CODE = "SUBMIT_CODE";
 const SHOW_TESTRESULT = "SHOW_TESTRESULT";
+const EDITOR_CHANGE = "EDITOR_CHANGE";
+const EDITOR_REDO = "EDITOR_REDO";
+const EDITOR_UNDO = "EDITOR_REDO";
 
 const change_program = (program_id) => {
     return {
@@ -72,12 +75,33 @@ const init_websocket = (ws) => {
     }
 };
 
+const on_editorchange = (editor_state) => {
+    return {
+        type: EDITOR_CHANGE,
+        editor_state: editor_state
+    }
+};
+
+const on_editorundo = (editor_state) => {
+    return {
+        type: EDITOR_UNDO,
+        editor_state
+    }
+};
+const on_editorredo = (editor_state) => {
+    return {
+        type: EDITOR_REDO,
+        editor_state
+    }
+}
+
+
 const submit_code = (props) => {
     console.log("submit_code");
     return {
         type: SUBMIT_CODE,
         ws: props.ws,
-        code: props.program_data["level0-add"]["initial_code"].join()
+        code: props.editor_state.getCurrentContent().getPlainText()
     }
 };
 
@@ -111,4 +135,4 @@ const mapDispatchToProps = (dispatch, props) => {
 
 App = connect(null, mapDispatchToProps)(App);
 export default App;
-export {change_program, submit_code}
+export {change_program, submit_code, on_editorchange, on_editorundo, on_editorredo}

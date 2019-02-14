@@ -1,8 +1,10 @@
 import {createStore, applyMiddleware} from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './sagas'
+import {ContentState, EditorState} from "draft-js";
 
 var initialState = {
+        editor_state: EditorState.createEmpty(),
         program_id: "level0-add",
         program_data: {
             "level0-add": {
@@ -51,12 +53,22 @@ const reducer = (state = initialState, action) => {
     console.log("reducer was called");
     console.log(state);
     console.log(action);
-    const all_programs = [];
     let selected_program;
     switch (action.type) {
+        case "EDITOR_CHANGE":
+            return Object.assign({}, state, {editor_state: action.editor_state});
+        case "EDITOR_UNDO":
+            return Object.assign({}, state, {editor_state: EditorState.undo(action.editor_state)});
+        case "EDITOR_REDO":
+            return Object.assign({}, state, {editor_state: EditorState.redo(action.editor_state)});
         case "CHANGE_PROGRAM":
+            selected_program = state.program_data[state.program_id];
+            const c = ContentState.createFromText(selected_program.initial_code.join());
             return Object.assign({}, state,
-                {program_id: action.program_id});
+                {
+                    program_id: action.program_id,
+                    editor_state: EditorState.createWithContent(c)
+                });
         case "UPDATE_PROGRAM":
             return Object.assign({}, state,
                 {program_data: action.program_data});
@@ -66,13 +78,14 @@ const reducer = (state = initialState, action) => {
             action.ws.send(action.code);
             return state;
         case "SHOW_TESTRESULT":
-            console.log(action.result);
-            selected_program = state.program_data[state.program_id];
-            console.log(selected_program);
-            console.log(selected_program.testcases);
-            console.log(action.result.index);
-            state.program_data[state.program_id].testcases[action.result.index].output = action.result;
-            return Object.assign({}, state, {});
+            // console.log(action.result);
+            // selected_program = state.program_data[state.program_id];
+            // console.log(selected_program);
+            // console.log(selected_program.testcases);
+            // console.log(action.result.index);
+            // state.program_data[state.program_id].testcases[action.result.index].output = action.result;
+            // return Object.assign({}, state, {});
+            return state;
         default:
             return state
     }

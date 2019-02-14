@@ -1,19 +1,13 @@
 import React, {Component} from 'react';
-import {ContentState, Editor, EditorState, getDefaultKeyBinding, convertToRaw, KeyBindingUtil} from 'draft-js';
+import {Editor, getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
 import {connect} from "react-redux";
-import {submit_code} from "./App";
+import {submit_code, on_editorchange, on_editorundo, on_editorredo} from "./App";
 
 const {hasCommandModifier} = KeyBindingUtil;
 
 class CodeEditor extends React.Component {
     constructor(props) {
         super(props);
-        const selected = props.program_data[props.program_id];
-
-        // this.state = {editorState: EditorState.createEmpty()};
-        var c = ContentState.createFromText(selected.initial_code.join());
-        this.state = {editorState: EditorState.createWithContent(c)};
-        this.onChange = (editorState) => this.setState({editorState});
         this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.props = props
     }
@@ -45,32 +39,31 @@ class CodeEditor extends React.Component {
             console.log(editorState.currentContent.getPlainText());
         }
         if (command === 'save') {
-            console.log("save");
             this.props.submit_code(this.props);
             return 'handled';
         } else if (command === "undo") {
-            this.setState({editorState: EditorState.undo(editorState)});
+            this.props.editor_undo(editorState);
             return 'handled';
         } else if (command === "redo") {
-            this.setState({editorState: EditorState.redo(editorState)});
+            this.props.editor_redo(editorState);
             return 'handled';
         }
         return 'not-handled';
     }
 
-    componentDidMount() {
-        console.log("[MyEditor.js] componentDidMount was called");
-        // const content = ContentState.createFromText(this.state.text);
-        // const editor = EditorState.createWithContent(content);
-        // this.setState({editorState: editor})
-    }
+    // componentDidMount() {
+    //     // console.log("[MyEditor.js] componentDidMount was called");
+    //     // const content = ContentState.createFromText(this.state.text);
+    //     // const editor = EditorState.createWithContent(content);
+    //     // this.setState({editorState: editor})
+    // }
 
     render() {
         return <div className="MainEditor">
-            <Editor editorState={this.state.editorState}
+            <Editor editorState={this.props.editor_state}
                     handleKeyCommand={this.handleKeyCommand}
                     keyBindingFn={this.keyBindingFn}
-                    onChange={this.onChange}/>
+                    onChange={this.props.on_change}/>
         </div>
     }
 }
@@ -81,8 +74,17 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        submit_code: (props) => {
-            dispatch(submit_code(props))
+        editor_undo: (editor_state) => {
+            dispatch(on_editorundo(editor_state))
+        },
+        editor_redo: (editor_state) => {
+            dispatch(on_editorredo(editor_state))
+        },
+        on_change: (editor_state) => {
+            dispatch(on_editorchange(editor_state))
+        },
+        submit_code: (plain_text) => {
+            dispatch(submit_code(plain_text))
         }
     }
 };
