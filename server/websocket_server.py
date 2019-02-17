@@ -138,7 +138,7 @@ class OnCodeServer:
                 message["index"] = i
                 message["input"] = case["input"]
                 message["expect"] = case["expect"]
-                message["verdict"] = (message["output"] == case["input"])
+                message["verdict"] = (message["expect"] == message["output"])
                 message["spent_time"] = "%-0.5f sec" % (end - start)
                 message["executed_code"] = submit_code
                 with open(f"tmp/{pid}_result.txt", "wb") as f:
