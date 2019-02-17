@@ -25,18 +25,15 @@ program_data = {
         "testcases": [
             {
                 "input": [1, 2],
-                "expect": 3,
-                "output": "XXX"
+                "expect": 3
             },
             {
                 "input": [-1, 6],
-                "expect": 5,
-                "output": "XXX"
+                "expect": 5
             },
             {
                 "input": [4, 5],
-                "expect": 9,
-                "output": "XXX"
+                "expect": 9
             }
         ],
     },
@@ -49,13 +46,28 @@ program_data = {
         "testcases": [
             {
                 "input": [2, 1],
-                "expect": 1,
-                "output": "XXX"
+                "expect": 1
             },
             {
                 "input": [-1, 6],
-                "expect": -7,
-                "output": "XXX"
+                "expect": -7
+            }
+        ],
+    },
+    "level0-mul": {
+        "program_id": "level0-mul",
+        "short_title": "Mul",
+        "question": "変数二つをかける関数を作成する。",
+        "initial_code": ["def mul(a, b):\n    return a * b"],
+        "function_params": ["a", "b"],
+        "testcases": [
+            {
+                "input": [2, 1],
+                "expect": 2
+            },
+            {
+                "input": [-1, 6],
+                "expect": -6
             }
         ],
     }
@@ -127,11 +139,11 @@ class OnCodeServer:
                 end = time.time()
                 message = {}
                 with open(f"tmp/{pid}_result.txt", "rb") as f:
-                    message["result"] = pickle.load(f)
+                    message["output"] = pickle.load(f)
                 message["index"] = i
-                message["input"] = case[0]
+                message["input"] = case[0].split(",")
                 message["expect"] = case[1]
-                message["verdict"] = (message["result"] == case[1])
+                message["verdict"] = (message["output"] == case[1])
                 message["spent_time"] = "%-0.5f sec" % (end - start)
                 message["executed_code"] = submit_code
                 with open(f"tmp/{pid}_result.txt", "wb") as f:

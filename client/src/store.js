@@ -6,11 +6,12 @@ import {ContentState, EditorState} from "draft-js";
 var initialState = {
         editor_state: EditorState.createEmpty(),
         program_id: "level0-add",
+        current_testcases: {},
         program_data: {
             "level0-add": {
                 "program_id": "level0-add",
                 "short_title": "Add",
-                "question": "hogehoge変数二つを足す関数を作成する。",
+                "question": "変数二つを足す関数を作成する。",
                 "initial_code": ["def add(a, b):\n    return a + b"],
                 "function_params": ["a", "b"],
                 "testcases": [
@@ -67,25 +68,31 @@ const reducer = (state = initialState, action) => {
             return Object.assign({}, state,
                 {
                     program_id: action.program_id,
-                    editor_state: EditorState.createWithContent(c)
+                    editor_state: EditorState.createWithContent(c),
+                    current_testcases: selected_program.testcases
                 });
         case "UPDATE_PROGRAM":
+            selected_program = action.program_data[state.program_id];
+            const cc = ContentState.createFromText(selected_program.initial_code.join());
             return Object.assign({}, state,
-                {program_data: action.program_data});
+                {
+                    editor_state: EditorState.createWithContent(cc),
+                    current_testcases: selected_program.testcases,
+                    program_data: action.program_data,
+                });
         case "INIT_WEBSOCKET":
             return Object.assign({}, state, {ws: action.ws});
         case "SUBMIT_CODE":
             action.ws.send(action.code);
             return state;
         case "SHOW_TESTRESULT":
-            // console.log(action.result);
-            // selected_program = state.program_data[state.program_id];
-            // console.log(selected_program);
-            // console.log(selected_program.testcases);
-            // console.log(action.result.index);
-            // state.program_data[state.program_id].testcases[action.result.index].output = action.result;
-            // return Object.assign({}, state, {});
-            return state;
+            console.log(action.result);
+            let testcase = Object.assign([], state.current_testcases);
+            testcase[action.result.index] = action.result;
+            return Object.assign({}, state,
+                {
+                    current_testcases: testcase,
+                });
         default:
             return state
     }

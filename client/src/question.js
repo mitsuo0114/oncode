@@ -6,7 +6,6 @@ const Question = (props) => {
     console.log(selected);
     if (selected) {
         return <div>
-            <p>Question</p>
             <p>{selected.question}</p>
         </div>
     }else{

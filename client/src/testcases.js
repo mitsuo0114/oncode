@@ -3,16 +3,16 @@ import {connect} from "react-redux";
 
 const TestCases = (props) => {
     const selected = props.program_data[props.program_id];
-    if (selected) {
-        const cases = selected.testcases.map((testcase) => {
+    if (Object.keys(props.current_testcases).length > 0) {
+        const cases = props.current_testcases.map((testcase) => {
             let inputs = testcase.input.map((input) => {
                 return <p key={testcase.input.indexOf(input)}>
                     {selected.function_params[testcase.input.indexOf(input)]} = {input}
                 </p>
             });
             // console.log(testcase);
-            return <tr key={selected.testcases.indexOf(testcase) + 1}>
-                <td className="TestIndex">{selected.testcases.indexOf(testcase) + 1}</td>
+            return <tr key={props.current_testcases.indexOf(testcase) + 1}>
+                <td className="TestIndex">{props.current_testcases.indexOf(testcase) + 1}</td>
                 <td>{inputs}</td>
                 <td>{testcase.expect}</td>
                 <td>{testcase.output}</td>
