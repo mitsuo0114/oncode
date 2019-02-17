@@ -73,6 +73,36 @@ program_data = {
                 "expect": -6
             }
         ],
+    },
+    "level1-gcd": {
+        "program_id": "level1-gcd",
+        "short_title": "GCD",
+        "question": "変数二つの最大公約数を求める。",
+        "initial_code": ["def gcd(a, b):\n    return a % b"],
+        "function_params": ["a", "b"],
+        "call": "gcd(##TESTCASE##)",
+        "testcases": [
+            {
+                "input": [5, 3],
+                "expect": 1
+            },
+            {
+                "input": [2, 6],
+                "expect": 2
+            },
+            {
+                "input": [1001, 1001],
+                "expect": 1001
+            },
+            {
+                "input": [11, 121],
+                "expect": 11
+            },
+            {
+                "input": [10010, 10005],
+                "expect": 5
+            },
+        ],
     }
 }
 

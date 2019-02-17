@@ -1,0 +1,13 @@
+
+.TestCase_Success {
+    background-color: palegreen;
+}
+
+.TestCase_Fail{
+    background-color: lightpink;
+}
+
+.TestIndex{
+    padding-left : 1.5em;
+    border: transparent;
+}

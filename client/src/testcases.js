@@ -1,32 +1,41 @@
 import React from "react";
 import {connect} from "react-redux";
+import './testcases.css';
+
 
 const TestCases = (props) => {
-    const selected = props.program_data[props.program_id];
     if (Object.keys(props.current_testcases).length > 0) {
         const cases = props.current_testcases.map((testcase) => {
             let inputs = testcase.input.map((input) => {
-                return <p key={testcase.input.indexOf(input)}>
-                    {selected.function_params[testcase.input.indexOf(input)]} = {input}
-                </p>
+                return <td>{input}</td>
             });
-            // console.log(testcase);
-            return <tr key={props.current_testcases.indexOf(testcase) + 1}>
+            return <tr key={props.current_testcases.indexOf(testcase) + 1}
+                       className={(testcase.verdict == null ? "" : testcase.verdict ? "TestCase_Success" : "TestCase_Fail")}>
                 <td className="TestIndex">{props.current_testcases.indexOf(testcase) + 1}</td>
-                <td>{inputs}</td>
+                {inputs}
                 <td>{testcase.expect}</td>
                 <td>{testcase.output}</td>
             </tr>
         });
+        
+        const params = props.program_data[props.program_id].function_params.map((param) => {
+            return <td>{param}</td>
+        });
 
         return <div>
-            <table className="TestCases">
+            <table>
                 <tbody>
                 <tr>
-                    <th className="TestIndex">#</th>
-                    <th>Input</th>
+                    <th>#</th>
+                    <th colSpan={2}>Input</th>
                     <th>Expect</th>
                     <th>Output</th>
+                </tr>
+                <tr>
+                    <td/>
+                    {params}
+                    <td/>
+                    <td/>
                 </tr>
                 {cases}
                 </tbody>
