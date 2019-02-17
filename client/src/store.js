@@ -24,7 +24,7 @@ const reducer = (state = initialState, action) => {
         case "EDITOR_REDO":
             return Object.assign({}, state, {editor_state: EditorState.redo(action.editor_state)});
         case "CHANGE_PROGRAM":
-            selected_program = state.program_data[state.program_id];
+            selected_program = state.program_data[action.program_id];
             const c = ContentState.createFromText(selected_program.initial_code.join());
             return Object.assign({}, state,
                 {
