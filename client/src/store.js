@@ -7,46 +7,7 @@ var initialState = {
         editor_state: EditorState.createEmpty(),
         program_id: "level0-add",
         current_testcases: {},
-        program_data: {
-            "level0-add": {
-                "program_id": "level0-add",
-                "short_title": "Add",
-                "question": "変数二つを足す関数を作成する。",
-                "initial_code": ["def add(a, b):\n    return a + b"],
-                "function_params": ["a", "b"],
-                "testcases": [
-                    {
-                        "input": [1, 2],
-                        "expect": 3,
-                        "output": "-"
-                    },
-                    {
-                        "input": [-1, 6],
-                        "expect": 5,
-                        "output": "-"
-                    }
-                ],
-            },
-            "level0-sub": {
-                "program_id": "level0-sub",
-                "short_title": "Sub",
-                "question": "変数二つを引く関数を作成する。",
-                "initial_code": ["def sub(a, b):\n    return a - b"],
-                "function_params": ["a", "b"],
-                "testcases": [
-                    {
-                        "input": [2, 1],
-                        "expect": 1,
-                        "output": "--"
-                    },
-                    {
-                        "input": [-1, 6],
-                        "expect": -7,
-                        "output": "--"
-                    }
-                ],
-            },
-        }
+        program_data: {}
     }
 ;
 
