@@ -22,6 +22,7 @@ program_data = {
         "question": "変数二つを足す関数を作成する。",
         "initial_code": ["def add(a, b):\n    return a + b"],
         "function_params": ["a", "b"],
+        "call": "add(##TESTCASE##)",
         "testcases": [
             {
                 "input": [1, 2],
@@ -43,6 +44,7 @@ program_data = {
         "question": "変数二つを引く関数を作成する。",
         "initial_code": ["def sub(a, b):\n    return a - b"],
         "function_params": ["a", "b"],
+        "call": "sub(##TESTCASE##)",
         "testcases": [
             {
                 "input": [2, 1],
@@ -60,6 +62,7 @@ program_data = {
         "question": "変数二つをかける関数を作成する。",
         "initial_code": ["def mul(a, b):\n    return a * b"],
         "function_params": ["a", "b"],
+        "call": "mul(##TESTCASE##)",
         "testcases": [
             {
                 "input": [2, 1],
@@ -99,24 +102,16 @@ class OnCodeServer:
         logger.debug("Client(%d) disconnected" % client['id'])
 
     def execute(self, server, code):
-        question = {
-            "initial": [
-                "def add(param1, param2):",
-                "    return int(param1) + int(param2)"
-            ],
-            "call": "add(##TESTCASE##)",
-            "testcases":
-                [("1,2", 3), ("3,4", 7), ("4,5", 9)]
-        }
-
         result = {}
-        original_code = code
-
+        inputdata = json.loads(code)
+        original_code = inputdata["code"]
+        program_id = inputdata["program_id"]
+        testcases = program_data[program_id]["testcases"]
         result["pids"] = []
-        for i, case in enumerate(question["testcases"]):
+        for i, case in enumerate(testcases):
             pid = str(uuid.uuid4())
-            q = question["call"]
-            q = q.replace("##TESTCASE##", case[0])
+            q = program_data[program_id]["call"]
+            q = q.replace("##TESTCASE##", ",".join(map(str, case["input"])))
             code = original_code + "\n".join([
                 "",
                 "import time",
@@ -134,16 +129,16 @@ class OnCodeServer:
             def ex(i, pid, case, submit_code, script, server):
                 logger.debug("running with " + f"{pid} / {case}")
                 start = time.time()
-                logger.debug(f"executing [tmp/{script} {pid} {case[0]}]")
+                logger.debug(f"executing [tmp/{script} {pid} {case['input']}]")
                 os.system(f"tmp\\{script}")
                 end = time.time()
                 message = {}
                 with open(f"tmp/{pid}_result.txt", "rb") as f:
                     message["output"] = pickle.load(f)
                 message["index"] = i
-                message["input"] = case[0].split(",")
-                message["expect"] = case[1]
-                message["verdict"] = (message["output"] == case[1])
+                message["input"] = case["input"]
+                message["expect"] = case["expect"]
+                message["verdict"] = (message["output"] == case["input"])
                 message["spent_time"] = "%-0.5f sec" % (end - start)
                 message["executed_code"] = submit_code
                 with open(f"tmp/{pid}_result.txt", "wb") as f:

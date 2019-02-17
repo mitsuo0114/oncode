@@ -44,7 +44,11 @@ const reducer = (state = initialState, action) => {
         case "INIT_WEBSOCKET":
             return Object.assign({}, state, {ws: action.ws});
         case "SUBMIT_CODE":
-            action.ws.send(action.code);
+            const data = {};
+            data["program_id"] = state.program_id;
+            data["code"] = action.code;
+            console.log(JSON.stringify(data));
+            action.ws.send(JSON.stringify(data));
             return state;
         case "SHOW_TESTRESULT":
             console.log(action.result);
