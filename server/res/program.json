@@ -1,0 +1,146 @@
+{
+  "level0-add": {
+    "program_id": "level0-add",
+    "short_title": "Add",
+    "question": "変数二つを足す関数を作成する。",
+    "initial_code": [
+      "def add(a, b):\n    return a + b"
+    ],
+    "function_params": [
+      "a",
+      "b"
+    ],
+    "call": "add(##TESTCASE##)",
+    "testcases": [
+      {
+        "input": [
+          1,
+          2
+        ],
+        "expect": 3
+      },
+      {
+        "input": [
+          -1,
+          6
+        ],
+        "expect": 5
+      },
+      {
+        "input": [
+          4,
+          5
+        ],
+        "expect": 9
+      }
+    ]
+  },
+  "level0-sub": {
+    "program_id": "level0-sub",
+    "short_title": "Sub",
+    "question": "変数二つを引く関数を作成する。",
+    "initial_code": [
+      "def sub(a, b):\n    return a - b"
+    ],
+    "function_params": [
+      "a",
+      "b"
+    ],
+    "call": "sub(##TESTCASE##)",
+    "testcases": [
+      {
+        "input": [
+          2,
+          1
+        ],
+        "expect": 1
+      },
+      {
+        "input": [
+          -1,
+          6
+        ],
+        "expect": -7
+      }
+    ]
+  },
+  "level0-mul": {
+    "program_id": "level0-mul",
+    "short_title": "Mul",
+    "question": "変数二つをかける関数を作成する。",
+    "initial_code": [
+      "def mul(a, b):\n    return a * b"
+    ],
+    "function_params": [
+      "a",
+      "b"
+    ],
+    "call": "mul(##TESTCASE##)",
+    "testcases": [
+      {
+        "input": [
+          2,
+          1
+        ],
+        "expect": 2
+      },
+      {
+        "input": [
+          -1,
+          6
+        ],
+        "expect": -6
+      }
+    ]
+  },
+  "level1-gcd": {
+    "program_id": "level1-gcd",
+    "short_title": "GCD",
+    "question": "変数二つの最大公約数を求める。",
+    "initial_code": [
+      "def gcd(a, b):\n    return a % b"
+    ],
+    "function_params": [
+      "a",
+      "b"
+    ],
+    "call": "gcd(##TESTCASE##)",
+    "testcases": [
+      {
+        "input": [
+          5,
+          3
+        ],
+        "expect": 1
+      },
+      {
+        "input": [
+          2,
+          6
+        ],
+        "expect": 2
+      },
+      {
+        "input": [
+          1001,
+          1001
+        ],
+        "expect": 1001
+      },
+      {
+        "input": [
+          11,
+          121
+        ],
+        "expect": 11
+      },
+      {
+        "input": [
+          10010,
+          10005
+        ],
+        "expect": 5
+      }
+    ]
+  }
+}
