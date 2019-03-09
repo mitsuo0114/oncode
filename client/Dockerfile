@@ -1,5 +1,6 @@
 FROM node:11.6.0-alpine
-EXPOSE 3000
 ADD . .
-RUN npm install
+RUN npm install --no-audit package-lock.json
+
+EXPOSE 3000
 CMD ["npm", "start"]
