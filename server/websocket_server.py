@@ -15,6 +15,13 @@ handler.setFormatter(logging.Formatter("%(asctime)s %(name)-12s %(funcName)-7s %
 logger.addHandler(handler)
 logger.propagate = False
 
+PORT = 9001
+log_level = logging.DEBUG
+handler.setLevel(log_level)
+logger.setLevel(log_level)
+
+logger.info("Initializing...")
+
 program_data = {
     "level0-add": {
         "program_id": "level0-add",
@@ -112,7 +119,7 @@ class OnCodeServer:
     def __init__(self, port, level):
         self.executer = ThreadPoolExecutor(max_workers=10)
         self.results = {}
-        self.server = WebsocketServer(port, loglevel=level)
+        self.server = WebsocketServer(port, host="0.0.0.0", loglevel=level)
         self.server.set_fn_new_client(self.new_client)
         self.server.set_fn_client_left(self.client_left)
         self.server.set_fn_message_received(self.message_received)
@@ -186,12 +193,7 @@ class OnCodeServer:
         # server.send_message_to_all(text)
         self.execute(server, message)
 
-
 if __name__ == "__main__":
-    PORT = 9001
-    log_level = logging.DEBUG
-    handler.setLevel(log_level)
-    logger.setLevel(log_level)
-
     server = OnCodeServer(PORT, log_level)
+    logger.info("server started")
     server.run_forever()
