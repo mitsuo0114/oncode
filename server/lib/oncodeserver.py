@@ -1,10 +1,9 @@
 import json
-import os
-import pickle
-import time
 import uuid
 
 from concurrent.futures import ThreadPoolExecutor
+
+from lib.code_executor import CodeExecutor
 from lib.websocketserver import WebsocketServer
 
 
@@ -49,7 +48,6 @@ class OnCodeServer:
         self.execute(server, client, message)
 
     def execute(self, server, client, code):
-        result = {}
         inputdata = json.loads(code)
         original_code = inputdata["code"]
         program_id = inputdata["program_id"]
@@ -58,46 +56,7 @@ class OnCodeServer:
             return
 
         testcases = self.program_data[program_id]["testcases"]
-        result["pids"] = []
         for i, case in enumerate(testcases):
             pid = str(uuid.uuid4())
-            q = self.program_data[program_id]["call"]
-            q = q.replace("##TESTCASE##", ",".join(map(str, case["input"])))
-            code = original_code + "\n".join([
-                "",
-                "import time",
-                "import sys",
-                "import pickle",
-                f'with open("tmp/{pid}_result.txt", "wb") as f:',
-                f"    f.write(pickle.dumps({q}))",
-                ""
-            ])
-            script = f"tmp_{pid}.py"
-            with open(f"tmp/{script}", "w") as f:
-                f.write(code)
-            result["pids"].append(pid)
-
-            def ex(i, pid, case, submit_code, script, server, client):
-                self.logger.debug("running with " + f"{pid} / {case}")
-                start = time.time()
-                self.logger.debug(f"executing [tmp/{script} {pid} {case['input']}]")
-                s = os.sep
-                os.system(f"python tmp{s}{script}")
-                end = time.time()
-                message = {}
-                with open(f"tmp/{pid}_result.txt", "rb") as f:
-                    message["output"] = pickle.load(f)
-                message["index"] = i
-                message["input"] = case["input"]
-                message["expect"] = case["expect"]
-                message["verdict"] = (message["expect"] == message["output"])
-                message["spent_time"] = "%-0.5f sec" % (end - start)
-                message["executed_code"] = submit_code
-                with open(f"tmp/{pid}_result.txt", "wb") as f:
-                    f.write(pickle.dumps(message))
-                self.logger.debug("outputted to " + f"{pid}_result.txt")
-                message["command"] = "show_testresult"
-                server.send_message(client, json.dumps(message))
-
-            self.executer.submit(fn=ex, i=i, pid=pid, case=case, original_code=original_code,
-                                 script=script, server=server, client=client)
+            call_code = self.program_data[program_id]["call"]
+            self.executer.submit(CodeExecutor.ex, i, pid, case, original_code, call_code, server, client, self.logger)
