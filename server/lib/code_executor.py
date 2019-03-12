@@ -9,15 +9,39 @@ class CodeExecutor:
     @staticmethod
     def _create_testscript(submit_code, case_input, call_code, pid):
         call_code = call_code.replace("##TESTCASE##", ",".join(map(str, case_input)))
-        code = submit_code + "\n".join([
-            "",
-            "import time",
-            "import sys",
-            "import pickle",
-            f'with open("tmp/{pid}_result.txt", "wb") as f:',
-            f"    f.write(pickle.dumps({call_code}))",
+
+        surpress_code = "\n".join([
+            "import builtins",
+            "replaces = [",
+            "    'open', '__import__', 'eval', 'dir', 'exec',",
+            "    'globals', 'locals', 'help', 'id', 'input', 'memoryview'",
+            "]",
+            "allow_import = ['collections', 'itertools']",
+            "originals = {}",
+            "def d(*a):",
+            "    if a[0] in allow_import:",
+            "        return originals['__import__'](*a)",
+            "    return None",
+            "for r in replaces:",
+            "    originals[r] = getattr(builtins, r)",
+            "    setattr(builtins, r, lambda *a: a)",
+            "builtins.__import__ = d",
             ""
         ])
+
+        output_code = "\n".join([
+            "",
+            "",
+            f"data = {call_code}",
+            "for r in replaces:",
+            "    setattr(builtins, r, originals[r])",
+            "import pickle",
+            f"with open('tmp/{pid}_result.txt', 'wb') as f:",
+            f"    f.write(pickle.dumps(data))",
+            ""
+        ])
+
+        code = surpress_code + submit_code + output_code
         return code
 
     @staticmethod
@@ -59,4 +83,3 @@ class CodeExecutor:
         message = CodeExecutor._create_response(start, end, i, pid, case, submit_code)
 
         server.send_message(client, json.dumps(message))
-
